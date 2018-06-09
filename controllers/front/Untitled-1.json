@@ -1,0 +1,21 @@
+{
+    "hasError": false,
+    "messageId": 0,
+    "errorCode": 0,
+    "count": 0,
+    "ott": "787720c16ed40354",
+    "result": {
+        "firstName": "مهران",
+        "lastName": "رهباردار",
+        "name": "mehrantest",
+        "email": "rahbardarmehran@gmail.com",
+        "gender": "MAN_GENDER",
+        "nickName": "mehrantest",
+        "profileImage": " ",
+        "cellphoneNumber": "09371321934",
+        "userId": 2319,
+        "username": "mehrantest",
+        "ssoId": "3905",
+        "ssoIssuerCode": 1
+    }
+}
