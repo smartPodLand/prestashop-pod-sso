@@ -22,7 +22,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 	{
 		parent::initContent();
         $code = Tools::getValue('code');
-		$url = "https://accounts.pod.land/oauth2/token/";
+		$url = Configuration::get('POD_SSO')."/token/";
 		$client_id = Configuration::get('POD_CLIENTID');
 		$client_secret = Configuration::get('POD_CLIENTSECRET');
 		
@@ -32,8 +32,10 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$response = curl_exec($ch);
-		curl_close($ch);
+		$e = curl_error($ch);
+        curl_close($ch);
 		$token = json_decode($response);
 		$_SESSION['access_token']= $token->access_token;
 		$_SESSION['refresh_token']= $token->refresh_token;
