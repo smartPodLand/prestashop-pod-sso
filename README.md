@@ -4,5 +4,5 @@ For displaying pod login button add `{hook h="displayPodLogin"}` hook where you 
 ## Installation
 for installing copy the directory to prestashop modules directory and rename it to podss
 
-##Styling
+## Styling
 You can use `pod-sso-a` class for styling hyperlink and `pod-sso-img` for styling pod logo
