@@ -7,7 +7,7 @@ class PodSso extends Module {
     {
       $this->name = 'podsso';
       $this->tab = 'administration';
-      $this->version = '1.0.5';
+      $this->version = '1.0.6';
       $this->author = 'Mehran Rahbardar';
       $this->need_instance = 0;
       $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
@@ -41,13 +41,11 @@ public function hookDisplayPodLogin($params)
 {
     $module_dir = _PS_BASE_URL_.__PS_BASE_URI__.str_replace(_PS_ROOT_DIR_.'/', '', _PS_MODULE_DIR_);
     $client_id = Configuration::get('POD_CLIENTID');
-    $client_secret = Configuration::get('POD_CLIENTSECRET');
+
     $pod_sso = Configuration::get('POD_SSO');
-    
-    $pod1 = '<li data-index="'."kk".'">';
-				$pod2 = '<a href="'."{$pod_sso}/authorize/?client_id={$client_id}&response_type=code&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&scope=profile email".'"type=pod" type="pod" title="Pod">';
-                $pod3 = '<img src="'.$module_dir.'podsso';
-                $pod = $pod1.$pod2.$pod3.'/views/img/buttons/pod_small.png"></a></li>';
+    $pod2 = '<a class="pod-sso-a" href="'."{$pod_sso}/authorize/?client_id={$client_id}&response_type=code&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&scope=profile email".'"type=pod" type="pod" title="Pod">';
+    $pod3 = '<img class="pod-sso-img"  src="'.$module_dir.'podsso';
+    $pod = $pod2.$pod3.'/views/img/buttons/pod_small.png"></a>';
                 return $pod;
 }
     public function uninstall()
