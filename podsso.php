@@ -196,3 +196,4 @@ public function hookDisplayPodLogin($params)
     return $helper->generateForm($fields_form);
 }
 }
+    
