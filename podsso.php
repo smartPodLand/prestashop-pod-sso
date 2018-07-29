@@ -7,7 +7,7 @@ class PodSso extends Module {
     {
       $this->name = 'podsso';
       $this->tab = 'administration';
-      $this->version = '1.0.5';
+      $this->version = '1.0.7';
       $this->author = 'Mehran Rahbardar';
       $this->need_instance = 0;
       $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
@@ -28,12 +28,12 @@ class PodSso extends Module {
 {
   return parent::install() &&
     $this->registerHook('displayPodLogin') &&
-    Configuration::updateValue('POD_CLIENTID', 'AAAAAA')
-    && Configuration::updateValue('POD_CLIENTSECRET', 'BBBBBB')
-    && Configuration::updateValue('POD_SSO', 'https://accounts.pod.land/oauth2')
+    Configuration::updateValue('POD_CLIENTID', '')
+    && Configuration::updateValue('POD_CLIENTSECRET', '')
+    && Configuration::updateValue('POD_SSO', 'https://accounts.pod.land')
     && Configuration::updateValue('POD_APIURL', 'https://api.pod.land/srv/core')
-    && Configuration::updateValue('POD_APITOKEN', 'CCCCC')
-    && Configuration::updateValue('POD_INVOICE_URL', 'https://gw.pod.land/v1/pbc/payinvoice')
+    && Configuration::updateValue('POD_APITOKEN', '')
+    && Configuration::updateValue('POD_INVOICE_URL', 'https://pay.pod.land')
     && Configuration::updateValue('GUILD_CODE', 'INFORMATION_TECHNOLOGY_GUILD');
 
 }
@@ -45,7 +45,7 @@ public function hookDisplayPodLogin($params)
     $pod_sso = Configuration::get('POD_SSO');
     
     $pod1 = '<li data-index="'."kk".'">';
-				$pod2 = '<a href="'."{$pod_sso}/authorize/?client_id={$client_id}&response_type=code&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&scope=profile email".'"type=pod" type="pod" title="Pod">';
+				$pod2 = '<a href="'."{$pod_sso}/oauth2/authorize/?client_id={$client_id}&response_type=code&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&scope=profile email".'"type=pod" type="pod" title="Pod">';
                 $pod3 = '<img src="'.$module_dir.'podsso';
                 $pod = $pod1.$pod2.$pod3.'/views/img/buttons/pod_small.png"></a></li>';
                 return $pod;
@@ -116,14 +116,14 @@ public function hookDisplayPodLogin($params)
             ),
             array(
                 'type' => 'text',
-                'label' => $this->l('OAuth Server URL'),
+                'label' => $this->l('SSO Adress'),
                 'name' => 'POD_SSO',
                 'size' => 20,
                 'required' => true
             ),
             array(
                 'type' => 'text',
-                'label' => $this->l('API URL'),
+                'label' => $this->l('Platform Address'),
                 'name' => 'POD_APIURL',
                 'size' => 255,
                 'required' => true
@@ -137,7 +137,7 @@ public function hookDisplayPodLogin($params)
             ),
             array(
                 'type' => 'text',
-                'label' => $this->l('Pay Invoice URL'),
+                'label' => $this->l('Private Call Address'),
                 'name' => 'POD_INVOICE_URL',
                 'size' => 255,
                 'required' => true
@@ -194,7 +194,6 @@ public function hookDisplayPodLogin($params)
     $helper->fields_value['POD_APITOKEN'] = Configuration::get('POD_APITOKEN');
     $helper->fields_value['POD_INVOICE_URL'] = Configuration::get('POD_INVOICE_URL');
     $helper->fields_value['GUILD_CODE'] = Configuration::get('GUILD_CODE');
-    //MYMODULE_NAME
     return $helper->generateForm($fields_form);
 }
 }

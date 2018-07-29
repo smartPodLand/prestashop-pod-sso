@@ -2,7 +2,7 @@
 <module>
 	<name>podsso</name>
 	<displayName><![CDATA[POD SSO]]></displayName>
-	<version><![CDATA[1.0.5]]></version>
+	<version><![CDATA[1.0.6]]></version>
 	<description><![CDATA[POD SSO Client for Prestashop.]]></description>
 	<author><![CDATA[Mehran Rahbardar]]></author>
 	<tab><![CDATA[administration]]></tab>

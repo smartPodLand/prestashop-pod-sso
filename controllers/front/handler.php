@@ -22,10 +22,10 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 	{
 		parent::initContent();
         $code = Tools::getValue('code');
-		$url = Configuration::get('POD_SSO')."/token/";
+		$url = Configuration::get('POD_SSO')."/oauth2/token/";
 		$client_id = Configuration::get('POD_CLIENTID');
 		$client_secret = Configuration::get('POD_CLIENTSECRET');
-		
+
 		$ch = curl_init($url);
 		$fields = "client_id={$client_id}&client_secret={$client_secret}&code={$code}&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&grant_type=authorization_code";
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
@@ -41,9 +41,10 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 		$_SESSION['refresh_token']= $token->refresh_token;
 		$_SESSION['expires_in']= $token->expires_in;
 		$_SESSION['start_time']= time();
-
 		$user_data = $this->getUserData();
-		$r = $this->loginUser($user_data);
+		$_SESSION['userId'] = $user_data->userId;
+		$_SESSION['bizId'] = $this->getBusinessId();
+		$this->loginUser($user_data);
 		Tools::redirect('my-account');
 		
 	}
@@ -51,7 +52,8 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 	public function getUserData()
 	{
 		$access_token = $_SESSION['access_token'];
-		$ch = curl_init('http://sandbox.pod.land/srv/basic-platform/nzh/getUserProfile/');
+		$api_url = Configuration::get('POD_APIURL');
+		$ch = curl_init($api_url.'/nzh/getUserProfile/');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			"_token_: {$access_token}",
 			"_token_issuer_: 1"
@@ -69,14 +71,40 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 		}		
 	}
 
+	function getBusinessId(){
+		$curl = curl_init();
+		$api_url = Configuration::get('POD_APIURL');
+		$api_token = Configuration::get('POD_APITOKEN');
+		curl_setopt_array($curl, [
+			CURLOPT_URL => $api_url . "/nzh/getUserBusiness",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'GET',
+			CURLOPT_HTTPHEADER => [
+				"_token_: {$api_token}",
+				"_token_issuer_: 1"
+			],
+		]);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+		curl_close($curl);
+		if ($err) {
+			return false;
+		} else {
+			return json_decode($response)->result->id;
+		}
+	}
+
 	public function loginUser($user_data){
 		if (Customer::customerExists(strip_tags($user_data->email)))
 		{
 			$customer_obj = new Customer();
 			$customer_tmp = $customer_obj->getByEmail($user_data->email);
-
 			$customer = new Customer($customer_tmp->id);
-
 		}
 		else {
 			$password = Tools::passwdGen();
@@ -138,10 +166,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
             CartRule::autoAddToCart($context);
 
             // Customer is now logged in.
-
             return true;
-
-		
 	}
 }
 ?>
