@@ -47,6 +47,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 		$this->loginUser($user_data);
 		Tools::redirect('my-account');
 		
+
 	}
 
 	public function getUserData()
@@ -70,7 +71,6 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 			return $resp->result;
 		}		
 	}
-
 	function getBusinessId(){
 		$curl = curl_init();
 		$api_url = Configuration::get('POD_APIURL');
@@ -98,6 +98,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 			return json_decode($response)->result->id;
 		}
 	}
+
 
 	public function loginUser($user_data){
 		if (Customer::customerExists(strip_tags($user_data->email)))

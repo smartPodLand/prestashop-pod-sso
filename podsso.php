@@ -41,9 +41,8 @@ public function hookDisplayPodLogin($params)
 {
     $module_dir = _PS_BASE_URL_.__PS_BASE_URI__.str_replace(_PS_ROOT_DIR_.'/', '', _PS_MODULE_DIR_);
     $client_id = Configuration::get('POD_CLIENTID');
-    $client_secret = Configuration::get('POD_CLIENTSECRET');
+
     $pod_sso = Configuration::get('POD_SSO');
-    
     $pod1 = '<li data-index="'."kk".'">';
 				$pod2 = '<a href="'."{$pod_sso}/oauth2/authorize/?client_id={$client_id}&response_type=code&redirect_uri={$this->context->link->getModuleLink('podsso', 'handler')}&scope=profile email".'"type=pod" type="pod" title="Pod">';
                 $pod3 = '<img src="'.$module_dir.'podsso';
@@ -197,3 +196,4 @@ public function hookDisplayPodLogin($params)
     return $helper->generateForm($fields_form);
 }
 }
+    
