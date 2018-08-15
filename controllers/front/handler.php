@@ -54,6 +54,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 	{
 		$access_token = $_SESSION['access_token'];
 		$api_url = Configuration::get('POD_APIURL');
+
 		$ch = curl_init($api_url.'/nzh/getUserProfile/');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			"_token_: {$access_token}",
@@ -101,6 +102,7 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 
 
 	public function loginUser($user_data){
+
 		if (Customer::customerExists(strip_tags($user_data->email)))
 		{
 			$customer_obj = new Customer();
@@ -111,8 +113,8 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
 			$password = Tools::passwdGen();
             // Build customer fields.
             $customer = new CustomerCore();
-            $customer->firstname = $user_data->firstName;
-            $customer->lastname = $user_data->lastName;
+            $customer->firstname = isset($user_data->firstName)? $user_data->firstName : ' ';
+            $customer->lastname = isset($user_data->lastName)? $user_data->lastName : ' ';
             $customer->gender = $user_data->gender;
             $customer->birthday = '';
             $customer->active = true;
@@ -134,8 +136,12 @@ class PodssoHandlerModuleFrontController extends ModuleFrontController
             $context->cookie->is_guest = $customer->isGuest();
             $context->cookie->passwd = $customer->passwd;
             $context->cookie->email = $customer->email;
+			$pod_only = Configuration::get('POD_ONLY');
+			if($pod_only==4){
+				$context->cookie->login_by_pod = 1;
+			}
 
-            // Customer is logged in
+		// Customer is logged in
             $customer->logged = 1;
 
             // Add customer to the context
